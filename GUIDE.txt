@@ -1,0 +1,188 @@
+
+# ChimeraCipher — User Guide
+
+Welcome to **ChimeraCipher** — a flexible, pattern-driven cipher tool that transforms your text using a sequence of cipher operations determined by custom patterns.
+
+---
+
+## How ChimeraCipher Works
+
+- You provide a **pattern string** and an **input text**.
+- Each character in the pattern corresponds to a transforming function (e.g., reverse, ROT13, Caesar shift, swap halves, etc).
+- The program applies the transformations in the pattern order when **encoding**, and in reverse order with inverse functions when **decoding**.
+- The **pattern can optionally end with a number**, which sets a custom shift amount for the Caesar shift (`C` transform).
+- The cipher supports a **customizable alphabet** allowing you to include letters, digits, punctuation, and Unicode characters.
+
+---
+
+## Alphabet Overview
+
+- The **alphabet** defines the set of characters that the cipher understands and uses.
+- By default, the alphabet is:
+
+  ```
+  ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+  ```
+
+- This means only uppercase letters A-Z and digits 0-9 will be processed; all other characters in your input will be skipped.
+- You can **customize the alphabet** to add additional characters, such as punctuation or Unicode, or reorder/remove characters.
+- The cipher adapts to any alphabet you supply, maintaining correct shifting and transformations.
+
+---
+
+## Important Notes on Custom Alphabet
+
+- The alphabet is **case-insensitive** internally: it normalizes to uppercase.
+- Your input and pattern will be sanitized to **only keep characters from your alphabet**.
+- All shifts and transforms operate modulo the length of your alphabet.
+- **You must use the same alphabet consistently for both encoding and decoding**, else you will get incorrect results.
+- Ensure your alphabet contains all characters you intend to encode or decode.
+
+---
+
+## Pattern Format
+
+- The pattern is a sequence of characters, each representing a transform.
+- Optionally, you can add a number suffix to the pattern that specifies the shift amount for the Caesar shift (`C`).
+
+### Example patterns
+
+| Pattern  | Description                         |
+|----------|-----------------------------------|
+| `ACE`    | Reverse → Caesar shift → Swap halves (default shift = 5) |
+| `ACE22`  | Same as above, but Caesar shift by 22 |
+| `BHS`    | ROT13 → Rotate right → shift by pattern char index |
+
+---
+
+## Supported Pattern Characters
+
+| Char | Transformation         |
+|-------|-------------------------|
+| A     | Reverse whole string    |
+| B     | ROT13 letters only      |
+| C     | Caesar shift by number (default 5 or number suffix) |
+| D     | Inverse Caesar (-shift) |
+| E     | Swap halves            |
+| H     | Rotate characters right by 1 |
+| I     | Rotate characters left by 2 |
+| J     | Atbash over full alphabet |
+| S     | Shift chars by pattern char’s index in alphabet |
+| Others| No operation (ignored)  |
+
+---
+
+## Running the Cipher
+
+### Encoding
+
+```bash
+node cipher.js encode <pattern> <text>
+# or shorthand
+node cipher.js e <pattern> <text>
+```
+
+### Decoding
+
+```bash
+node cipher.js decode <pattern> <encoded_text>
+# or shorthand
+node cipher.js d <pattern> <encoded_text>
+```
+
+Example:
+
+```bash
+node cipher.js e ACE22 "Hello123"
+node cipher.js d ACE22 <output_from_encoding>
+```
+
+---
+
+## Customizing the Alphabet
+
+By default, the script uses:
+
+```js
+let ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+```
+
+To customize:
+
+1. Open the script file (`cipher.js`, or your filename) using a text editor like `nano`:
+
+   ```bash
+   nano cipher.js
+   ```
+
+2. Find the line near the top that starts with `let ALPHABET =`.
+
+3. Modify the string to include the characters you want. For example, to add punctuation:
+
+   ```js
+   let ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,<>/?~!@#$%^&*()-_=+';
+   ```
+
+4. Save the file and exit:
+
+   - Press `CTRL + O` then Enter to save.
+   - Press `CTRL + X` to exit nano.
+
+5. Run the cipher as normal. The new characters in the alphabet will be recognized and included in transformations.
+
+---
+
+## Using nano: Quick Tutorial
+
+`nano` is a simple terminal text editor available on most Linux systems.
+
+### Basic steps to edit files with nano:
+
+- Open the file:
+
+  ```
+  nano cipher.js
+  ```
+
+- Move the cursor with arrow keys to the line you want to edit.
+- Edit the text as needed.
+- To save your changes:
+
+  - Press `CTRL + O` (the letter O, stands for "write Out").
+  - Nano will prompt: `File Name to Write: cipher.js` — press `Enter` to confirm.
+
+- To exit nano:
+
+  - Press `CTRL + X`.
+
+Nano also displays helpful shortcuts at the bottom of the window.
+
+---
+
+## Tips & Best Practices
+
+- Always keep a backup of your cipher script before changing the alphabet.
+- Remember to keep your pattern secret to maintain confidentiality.
+- Use longer and more diverse patterns for stronger encryption.
+- When adding new characters to the alphabet, make sure your input text contains only characters present in the alphabet.
+- The script handles uppercase internally; input is case-insensitive.
+
+---
+
+## Troubleshooting
+
+- If decoding produces garbage, check:
+  - You are using the exact same alphabet for encode and decode.
+  - The pattern and shift parameter are the same.
+  - Your input and pattern only include characters included in the alphabet.
+
+---
+
+Happy ciphering with **ChimeraCipher**!  
+If you have questions or want to contribute transforms and features, feel free to dive in and modify the code!
+
+---
+
+# License
+
+This project is open source under GPLv3.0.
